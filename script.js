@@ -77,3 +77,5 @@ function input_player() {
     }
     body.innerHTML += '<button onclick="next()">開始遊戲</button>';
 }
+
+// just for testing
