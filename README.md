@@ -1,2 +1,2 @@
 # dart_recorder
-A webpage to record a dart game.
+A web page for recording a dart game.
