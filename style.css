@@ -1,0 +1,29 @@
+body {
+    display: grid;
+    place-items: center;
+    background-color: #333;
+    color: #fff;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 3rem;
+}
+
+input {
+    font-size: 2rem;
+}
+
+button {
+    font-size: 2rem;
+    padding: 1rem;
+    margin: 3rem;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
