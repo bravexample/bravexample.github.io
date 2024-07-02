@@ -1,8 +1,8 @@
 body {
     display: grid;
     place-items: center;
-    background-color: #333;
-    color: #fff;
+    background-color: #000;
+    color: #555;
 }
 
 h1 {
@@ -15,14 +15,16 @@ h2 {
 
 input {
     font-size: 2rem;
+    background-color: #555;
+    color: #000;
 }
 
 button {
     font-size: 2rem;
     padding: 1rem;
     margin: 3rem;
-    background-color: #fff;
-    color: #333;
+    background-color: #555;
+    color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
