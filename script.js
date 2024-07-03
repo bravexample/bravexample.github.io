@@ -20,36 +20,19 @@ let score;
 
 // the main function
 function main() {
-    body = document.getElementById('body');
-    
     switch (basic.state) {
         case 0:
+            body = document.getElementById('body');
             welcome();
             break;
-        case 1:
-            input_player();
-            break;
-        case 2:
-            game();
-            break;
-        // case 3:
-        //     result();
-        //     break;
-        default:
-            body.innerHTML = '<h1>錯誤：未定義狀態</h1>'
-            break;
-    }
-}
 
-// the function for the next step
-function next() {
-    switch (basic.state) {
-        case 0:
+        case 1:
             basic.target_score = target_score.value;
             basic.player_amount = player_amount.value;
-            basic.state = 1;
+            input_player();
             break;
-        case 1:
+
+        case 2:
             for (let i = 0; i < basic.player_amount; i++) {
                 players.push({
                     name: document.getElementById('player_name_' + i).value,
@@ -57,20 +40,16 @@ function next() {
                 });
             }
             playing = basic.player_amount;
-            basic.state = 2;
+            game();
             break;
-        case 2:
-            basic.state = 3;
-            break;
+
         // case 3:
-        //     basic.state = 0;
+        //     result();
         //     break;
+
         default:
             body.innerHTML = '<h1>錯誤：未定義狀態</h1>'
-            break;
     }
-    main();
-
 }
 
 // the function for the first page, getting the target score and the amount of players
@@ -78,6 +57,8 @@ function welcome() {
     body.innerHTML = '<h1>歡迎使用飛鏢計分器</h1>'
                    + '<input type="number" id="target_score" placeholder="請輸入目標分數" min=301 max=701 step=200 />'
                    + '<input type="number" id="player_amount" placeholder="請輸入遊玩人數" min=1 max=4 />'
+
+    basic.state = 1;
 
     target_score = document.getElementById('target_score');
     player_amount = document.getElementById('player_amount');
@@ -91,7 +72,7 @@ function welcome() {
 
     player_amount.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            next();
+            main();
         }
     })
 }
@@ -102,6 +83,8 @@ function input_player() {
     for (let i = 0; i < basic.player_amount; i++) {
         body.innerHTML += '<input id="player_name_' + i + '" placeholder="玩家 ' + (i + 1) + ' 名稱" />';
     }
+
+    basic.state = 2;
 
     let first_input = document.getElementById('player_name_0');
     first_input.addEventListener('keypress', function(event) {
@@ -121,7 +104,7 @@ function input_player() {
 
     document.getElementById('player_name_' + (basic.player_amount - 1)).addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            next();
+            main();
         }
     })
 }
@@ -132,6 +115,8 @@ function game() {
                    + '<table><tr id="name_row"></tr><tr id="score_row"></tr></table>'
                    + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />';
     
+    basic.state = 3;
+
     name_row = document.getElementById('name_row');
     score_row = document.getElementById('score_row');
 
@@ -144,7 +129,7 @@ function game() {
     score = document.getElementById('score');
     score.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            next();
+            main();
         }
     })
     score.focus();
