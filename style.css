@@ -15,20 +15,15 @@ h2 {
 
 input {
     font-size: 2rem;
-    width: 25%;
+    width: 20%;
     text-align: center;
     margin: 2rem;
     background-color: #555;
     color: #000;
 }
 
-button {
-    font-size: 2rem;
-    padding: 1rem;
-    margin: 3rem;
-    background-color: #555;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+td {
+    font-size: 3rem;
+    text-align: center;
+    border: 10px solid #000;
 }
