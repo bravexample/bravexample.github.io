@@ -9,6 +9,7 @@ let basic = {
 let players = [];
 let current_player = 0;
 let playing = 0;
+let rank = [];
 
 // for elements
 let body;
@@ -17,6 +18,7 @@ let player_amount;
 let name_row;
 let score_row;
 let score;
+let rank_row;
 
 // the main function
 function main() {
@@ -37,15 +39,35 @@ function main() {
                 players.push({
                     name: document.getElementById('player_name_' + i).value,
                     score: basic.target_score,
+                    playing: true
                 });
             }
             playing = basic.player_amount;
+            basic.state = 3
             game();
             break;
 
-        // case 3:
-        //     result();
-        //     break;
+        case 3:
+            players[current_player].score -= score.value;
+
+            if (players[current_player].score <= 0) {
+                players[current_player].playing = false;
+                playing--;
+
+                rank.push(players[current_player].name);
+                
+                if (playing <= 0) {
+                    result()
+                    break;
+                }
+            }
+
+            current_player = (current_player + 1) % basic.player_amount;
+            while (players[current_player].playing === false) {
+                current_player = (current_player + 1) % basic.player_amount;
+            }
+            game();
+            break;
 
         default:
             body.innerHTML = '<h1>錯誤：未定義狀態</h1>'
@@ -114,8 +136,6 @@ function game() {
     body.innerHTML = '<h1 id="h1">現在輪到 ' + players[current_player].name + ' 玩家</h1>'
                    + '<table><tr id="name_row"></tr><tr id="score_row"></tr></table>'
                    + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />';
-    
-    basic.state = 3;
 
     name_row = document.getElementById('name_row');
     score_row = document.getElementById('score_row');
@@ -133,4 +153,18 @@ function game() {
         }
     })
     score.focus();
+}
+
+// the function for the result
+function result() {
+    body.innerHTML = '<h1>遊戲結束</h1>'
+                   + '<table><tr id="rank_row"></tr><tr id="name_row"></tr></table>';
+
+    rank_row = document.getElementById('rank_row');
+    name_row = document.getElementById('name_row');
+
+    for (let i = 0; i < basic.player_amount; i++) {
+        rank_row.innerHTML += '<td>第 ' + (i + 1) + ' 名</td>';
+        name_row.innerHTML += '<td>' + rank[i] + '</td>';
+    }
 }
