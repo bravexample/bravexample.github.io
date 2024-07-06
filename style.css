@@ -1,29 +1,29 @@
 body {
-    display: grid;
-    place-items: center;
-    background-color: #000;
-    color: #555;
+  display: grid;
+  place-items: center;
+  background-color: #000;
+  color: #555;
 }
 
 h1 {
-    font-size: 4rem;
+  font-size: 50px;
 }
 
 h2 {
-    font-size: 3rem;
+  font-size: 40px;
 }
 
 input {
-    font-size: 2rem;
-    width: 20%;
-    text-align: center;
-    margin: 2rem;
-    background-color: #555;
-    color: #000;
+  font-size: 30px;
+  width: 20%;
+  text-align: center;
+  margin: 30px;
+  background-color: #555;
+  color: #000;
 }
 
-td {
-    font-size: 3rem;
-    text-align: center;
-    border: 10px solid #000;
+table {
+  font-size: 40px;
+  text-align: center;
+  border: 10px solid #000;
 }
