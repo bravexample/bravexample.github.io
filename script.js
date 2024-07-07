@@ -131,8 +131,7 @@ function input_player() {
 
 // the function for the game
 function game() {
-  body.innerHTML = '<h2>現在輪到</h2>'
-                 + '<h1>' + players[current_player].name + '</h1>'
+  body.innerHTML = '<h1>現在輪到<br />' + players[current_player].name + '</h1>'
                  + '<table id="table"></table>'
                  + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />';
 
