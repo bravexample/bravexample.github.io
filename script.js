@@ -4,9 +4,9 @@ var target_score = 0;
 var player_amount = 0;
 var players = [];
 var current_player = 0;
+var very_first = -1;
 var log = [];
 var log_index = -1;
-var very_first = -1;
 var playing = 0;
 var rank = [];
 
@@ -220,6 +220,10 @@ function again() {
     current_player = 0;
     playing = player_amount;
     rank = [];
+
+    very_first = -1;
+    log = [];
+    log_index = -1;
 
     game();
 }
