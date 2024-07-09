@@ -4,6 +4,8 @@ var target_score = 0;
 var player_amount = 0;
 var players = [];
 var current_player = 0;
+var log = [];
+var log_index = -1;
 var playing = 0;
 var rank = [];
 
@@ -83,7 +85,8 @@ function add_players() {
 function game() {
     body.innerHTML = '<h1>現在輪到<br />' + players[current_player].name + '</h1>'
                    + '<table id="table"></table>'
-                   + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />';
+                   + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />'
+                   + '<table><tr id="recovery"></tr></table>';
 
     var table = document.getElementById('table');
 
@@ -91,6 +94,14 @@ function game() {
     for (let i = 0; i < player_amount; i++) {
         table.innerHTML += '<tr><td>' + players[i].name + '</td></tr>'
                          + '<tr><td>' + players[i].score + '</td></tr>';
+    }
+
+    var recovery = document.getElementById('recovery');
+    if (log_index >= 0) {
+        recovery.innerHTML = '<td><button onclick="undo()">上一步</button></td>';
+    }
+    if (log_index < log.length - 1) {
+        recovery.innerHTML += '<td><button onclick="redo()">下一步</button></td>';
     }
 
     var score = document.getElementById('score');
@@ -102,8 +113,45 @@ function game() {
     score.focus();
 }
 
+// function for undo
+function undo() {
+    current_player = log[log_index].player;
+    players[current_player].score = log[log_index].score;
+    if (players[current_player].playing === false) {
+        players[current_player].playing = true;
+        playing++;
+        rank.pop();
+    }
+    log_index--;
+    game();
+}
+
+// function for redo
+function redo() {
+    log_index++;
+    current_player = log[log_index].player;
+    players[current_player].score = log[log_index].score;
+    if (players[current_player].score === 0) {
+        players[current_player].playing = false;
+        playing--;
+        rank.push(players[current_player].name);
+    }
+    game();
+}
+
 // check if the player is still playing
 function check_score(score) {
+    // remove the logs after the current index
+    if (log_index < log.length - 1){
+        log.splice(log_index + 1, log.length - log_index - 1);
+    }
+
+    log.push({
+        player: current_player,
+        score: players[current_player].score
+    });
+    log_index++;
+    
     var temp = players[current_player].score - score;
 
     if (temp > 0) {
