@@ -6,6 +6,7 @@ var players = [];
 var current_player = 0;
 var log = [];
 var log_index = -1;
+var very_first = -1;
 var playing = 0;
 var rank = [];
 
@@ -115,8 +116,14 @@ function game() {
 
 // function for undo
 function undo() {
+    if (very_first === -1) {
+        very_first = current_player;
+    }
+
     current_player = log[log_index].player;
+    var temp = players[current_player].score;
     players[current_player].score = log[log_index].score;
+    log[log_index].score = temp;
     if (players[current_player].playing === false) {
         players[current_player].playing = true;
         playing++;
@@ -130,17 +137,29 @@ function undo() {
 function redo() {
     log_index++;
     current_player = log[log_index].player;
+    var temp = players[current_player].score;
     players[current_player].score = log[log_index].score;
+    log[log_index].score = temp;
     if (players[current_player].score === 0) {
         players[current_player].playing = false;
         playing--;
         rank.push(players[current_player].name);
     }
+
+    if (log_index >= log.length - 1) {
+        current_player = very_first;
+        very_first = -1;
+    } else {
+        current_player = log[log_index + 1].player;
+    }
+
     game();
 }
 
 // check if the player is still playing
 function check_score(score) {
+    very_first = -1;
+
     // remove the logs after the current index
     if (log_index < log.length - 1){
         log.splice(log_index + 1, log.length - log_index - 1);
