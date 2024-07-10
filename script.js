@@ -1,14 +1,14 @@
 // needed variables
-var body = null;
-var target_score = 0;
-var player_amount = 0;
-var players = [];
-var current_player = 0;
-var very_first = -1;
-var log = [];
-var log_index = -1;
-var playing = 0;
-var rank = [];
+let body = null;
+let target_score = 0;
+let player_amount = 0;
+let players = [];
+let current_player = 0;
+let very_first = -1;
+let log = [];
+let log_index = -1;
+let playing = 0;
+let rank = [];
 
 // the function for the first page, getting the target score and the amount of players
 function welcome() {
@@ -18,8 +18,8 @@ function welcome() {
                    + '<input type="number" id="score" placeholder="請輸入目標分數" min=301 max=701 step=200 />'
                    + '<input type="number" id="amount" placeholder="請輸入遊玩人數" min=1 max=4 />';
 
-    var score = document.getElementById('score');
-    var amount = document.getElementById('amount');
+    let score = document.getElementById('score');
+    let amount = document.getElementById('amount');
 
     score.focus();
     score.addEventListener('keypress', function(event) {
@@ -44,7 +44,7 @@ function input_player() {
         body.innerHTML += '<input id="player_name_' + i + '" placeholder="玩家 ' + (i + 1) + ' 名稱" />';
     }
 
-    var first_input = document.getElementById('player_name_0');
+    let first_input = document.getElementById('player_name_0');
     first_input.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
             document.getElementById('player_name_1').focus();
@@ -89,25 +89,35 @@ function game() {
                    + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />'
                    + '<table><tr id="recovery"></tr></table>';
 
-    var table = document.getElementById('table');
+    let table = document.getElementById('table');
 
     // list the players and their scores in the table
     for (let i = 0; i < player_amount; i++) {
-        table.innerHTML += '<tr><td>' + players[i].name + '</td></tr>'
-                         + '<tr><td>' + players[i].score + '</td></tr>';
+        if (i == current_player) {
+            table.innerHTML += '<tr><td class="current_player"><b>' + players[i].name + '</b></td></tr>'
+                             + '<tr><td class="current_player"><b>' + players[i].score + '</b></td></tr>';
+        } else {
+            table.innerHTML += '<tr><td>' + players[i].name + '</td></tr>'
+                             + '<tr><td>' + players[i].score + '</td></tr>';
+        }
     }
 
-    var recovery = document.getElementById('recovery');
+    let recovery = document.getElementById('recovery');
     if (log_index >= 0) {
         recovery.innerHTML = '<td><button onclick="undo()">上一步</button></td>';
+    } else {
+        recovery.innerHTML = '<td><button disabled>上一步</button></td>';
     }
-    if (log_index < log.length - 1) {
+    if (very_first !== -1) {
         recovery.innerHTML += '<td><button onclick="redo()">下一步</button></td>';
+    } else {
+        recovery.innerHTML += '<td><button disabled>下一步</button></td>';
     }
 
-    var score = document.getElementById('score');
+    let score = document.getElementById('score');
     score.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
+            logging();
             check_score(score.value);
         }
     })
@@ -121,7 +131,7 @@ function undo() {
     }
 
     current_player = log[log_index].player;
-    var temp = players[current_player].score;
+    let temp = players[current_player].score;
     players[current_player].score = log[log_index].score;
     log[log_index].score = temp;
     if (players[current_player].playing === false) {
@@ -137,17 +147,27 @@ function undo() {
 function redo() {
     log_index++;
     current_player = log[log_index].player;
-    var temp = players[current_player].score;
-    players[current_player].score = log[log_index].score;
-    log[log_index].score = temp;
-    if (players[current_player].score === 0) {
-        players[current_player].playing = false;
-        playing--;
-        rank.push(players[current_player].name);
+    if (players[current_player].playing === false) {
+        // remove the log
+        log.splice(log_index, 1);
+        log_index--;
+        if (log_index < log.length - 1) {
+            redo();
+        }
+    } else {
+        let temp = players[current_player].score;
+        players[current_player].score = log[log_index].score;
+        log[log_index].score = temp;
+        if (players[current_player].score === 0 && ranking()) {
+            return;
+        }
     }
 
     if (log_index >= log.length - 1) {
         current_player = very_first;
+        while (players[current_player].playing === false) {
+            current_player = (current_player + 1) % player_amount;
+        }
         very_first = -1;
     } else {
         current_player = log[log_index + 1].player;
@@ -156,34 +176,33 @@ function redo() {
     game();
 }
 
+// function for logging the score
+function logging() {
+    if (log_index >= log.length - 1) {
+        very_first = -1;
+        log.push({
+            player: current_player,
+            score: players[current_player].score
+        });
+        log_index++;
+    } else {
+        log_index++;
+        log[log_index] = {
+            player: current_player,
+            score: players[current_player].score
+        };
+    }
+}
+
 // check if the player is still playing
 function check_score(score) {
-    very_first = -1;
-
-    // remove the logs after the current index
-    if (log_index < log.length - 1){
-        log.splice(log_index + 1, log.length - log_index - 1);
-    }
-
-    log.push({
-        player: current_player,
-        score: players[current_player].score
-    });
-    log_index++;
-    
-    var temp = players[current_player].score - score;
+    let temp = players[current_player].score - score;
 
     if (temp > 0) {
         players[current_player].score = temp;
     } else if (temp === 0) {
         players[current_player].score = 0;
-        players[current_player].playing = false;
-        playing--;
-
-        rank.push(players[current_player].name);
-
-        if (playing <= 0) {
-            result();
+        if (ranking()) {
             return;
         }
     }
@@ -196,13 +215,28 @@ function check_score(score) {
     game();
 }
 
+// add a player to the ranking and check if the game is over
+function ranking() {
+    players[current_player].playing = false;
+    playing--;
+
+    rank.push(players[current_player].name);
+
+    if (playing <= 0) {
+        result();
+        return true;
+    }
+
+    return false;
+}
+
 // the function for the result
 function result() {
     body.innerHTML = '<h1>遊戲結束</h1>'
                    + '<table id="table"></table>'
                    + '<button onclick="again()">再來一次</button>';
 
-    var table = document.getElementById('table');
+    let table = document.getElementById('table');
 
     for (let i = 0; i < player_amount; i++) {
         table.innerHTML += '<tr><td>第 ' + (i + 1) + ' 名</td></tr>'
