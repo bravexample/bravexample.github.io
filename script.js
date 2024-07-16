@@ -84,7 +84,7 @@ function add_players() {
 
 // the function for the game
 function game() {
-    body.innerHTML = '<h1>現在輪到<br />' + players[current_player].name + '</h1>'
+    body.innerHTML = '<h1 class="current_player">現在輪到</h1>'
                    + '<table id="table"></table>'
                    + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />'
                    + '<table><tr id="recovery"></tr></table>';
@@ -92,13 +92,15 @@ function game() {
     let table = document.getElementById('table');
 
     // list the players and their scores in the table
-    for (let i = 0; i < player_amount; i++) {
-        if (i == current_player) {
-            table.innerHTML += '<tr><td class="current_player"><b>' + players[i].name + '</b></td></tr>'
-                             + '<tr><td class="current_player"><b>' + players[i].score + '</b></td></tr>';
-        } else {
-            table.innerHTML += '<tr><td>' + players[i].name + '</td></tr>'
-                             + '<tr><td>' + players[i].score + '</td></tr>';
+    for (let i = 0; i < player_amount; i += 2) {
+        table.innerHTML += '<tr id="tr_' + i + '"></tr>';
+        let tr = document.getElementById('tr_' + i);
+        for (let j = i; j < i + 2 && j < player_amount; j++) {
+            if (j === current_player) {
+                tr.innerHTML += '<td class="current_player"><b>' + players[j].name + '<br />' + players[j].score+ '</b></td>'
+            } else {
+                tr.innerHTML += '<td>' + players[j].name + '<br />' + players[j].score + '</td>';
+            }
         }
     }
 
