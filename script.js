@@ -110,10 +110,11 @@ function game() {
     } else {
         recovery.innerHTML = '<td><button disabled>上一步</button></td>';
     }
-    if (very_first !== -1) {
+    if (log_index < log.length - 1) {
         recovery.innerHTML += '<td><button onclick="redo()">下一步</button></td>';
     } else {
         recovery.innerHTML += '<td><button disabled>下一步</button></td>';
+        very_first = -1;
     }
 
     let score = document.getElementById('score');
@@ -180,8 +181,7 @@ function redo() {
 
 // function for logging the score
 function logging() {
-    if (log_index >= log.length - 1) {
-        very_first = -1;
+    if (very_first === -1) {
         log.push({
             player: current_player,
             score: players[current_player].score
