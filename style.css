@@ -11,6 +11,12 @@ h1 {
     text-align: center;
 }
 
+h2 {
+    font-size: 0.75em;
+    text-align: center;
+    margin: 0;
+}
+
 input {
     font-size: 1em;
     width: 8em;
@@ -21,7 +27,6 @@ input {
 }
 
 table {
-    font-size: 1em;
     text-align: center;
 }
 
@@ -33,10 +38,14 @@ td {
     color: #0f0;
 }
 
+.score {
+    color: #f00;
+}
+
 button {
     font-size: 1em;
-    margin-top: 0.5em;
     border: none;
+    margin-top: 0.5em;
     background-color: #555;
     color: #000;
 }

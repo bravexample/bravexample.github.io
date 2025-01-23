@@ -23,16 +23,18 @@ function welcome() {
 
     score.focus();
     score.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            amount.focus();
+        switch (event.key) {
+            case 'Enter':
+                amount.focus();
         }
     })
 
     amount.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            target_score = score.value;
-            player_amount = amount.value;
-            input_player();
+        switch (event.key) {
+            case 'Enter':
+                target_score = score.value;
+                player_amount = amount.value;
+                input_player();
         }
     })
 }
@@ -46,23 +48,26 @@ function input_player() {
 
     let first_input = document.getElementById('player_name_0');
     first_input.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            document.getElementById('player_name_1').focus();
+        switch (event.key) {
+            case 'Enter':
+                document.getElementById('player_name_1').focus();
         }
     })
     first_input.focus();
 
     for (let i = 1; i < player_amount - 1; i++) {
         document.getElementById('player_name_' + i).addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                document.getElementById('player_name_' + (i + 1)).focus();
+            switch (event.key) {
+                case 'Enter':
+                    document.getElementById('player_name_' + (i + 1)).focus();
             }
         })
     }
 
     document.getElementById('player_name_' + (player_amount - 1)).addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            add_players();
+        switch (event.key) {
+            case 'Enter':
+                add_players();
         }
     })
 }
@@ -86,7 +91,8 @@ function add_players() {
 function game() {
     body.innerHTML = '<h1 class="current_player">現在輪到</h1>'
                    + '<table id="table"></table>'
-                   + '<input type="number" id="score" placeholder="請輸入本局分數" min=0 max=180 />'
+                   + '<h2 class="score">請輸入分數</h2>'
+                   + '<input type="number" id="score" min=0 max=180 />'
                    + '<table><tr id="recovery"></tr></table>';
 
     let table = document.getElementById('table');
@@ -97,31 +103,57 @@ function game() {
         let tr = document.getElementById('tr_' + i);
         for (let j = i; j < i + 2 && j < player_amount; j++) {
             if (j === current_player) {
-                tr.innerHTML += '<td class="current_player"><b>' + players[j].name + '<br />' + players[j].score+ '</b></td>'
+                tr.innerHTML += '<td class="current_player"><h2>' + players[j].name + '<br />' + players[j].score+ '</h2></td>'
             } else {
-                tr.innerHTML += '<td>' + players[j].name + '<br />' + players[j].score + '</td>';
+                tr.innerHTML += '<td><h2>' + players[j].name + '<br />' + players[j].score + '</h2></td>';
             }
         }
     }
 
+    let undo_on = false;
+    let redo_on = false;
     let recovery = document.getElementById('recovery');
     if (log_index >= 0) {
-        recovery.innerHTML = '<td><button onclick="undo()">上一步</button></td>';
+        recovery.innerHTML = '<td><button onclick="undo()">上一步(b)</button></td>';
+        undo_on = true;
     } else {
-        recovery.innerHTML = '<td><button disabled>上一步</button></td>';
+        recovery.innerHTML = '<td><button disabled></button></td>';
+        undo_on = false;
     }
+    recovery.innerHTML += '<td><button onclick="again()">從頭再來(a)</button></td>';
     if (log_index < log.length - 1) {
-        recovery.innerHTML += '<td><button onclick="redo()">下一步</button></td>';
+        recovery.innerHTML += '<td><button onclick="redo()">下一步(n)</button></td>';
+        redo_on = true;
     } else {
-        recovery.innerHTML += '<td><button disabled>下一步</button></td>';
+        recovery.innerHTML += '<td><button disabled></button></td>';
         very_first = -1;
+        redo_on = false;
     }
 
     let score = document.getElementById('score');
     score.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            logging();
-            check_score(score.value);
+        switch (event.key) {
+            case 'Enter':
+                logging();
+                check_score(score.value);
+                break;
+            case 'a':
+                again();
+                break;
+            case 'b':
+                if (undo_on) {
+                    undo();
+                }
+                break;
+            case 'n':
+                if (redo_on) {
+                    redo();
+                }
+        }
+    })
+    score.addEventListener('input', function() {
+        if (!(score.value > 0)) {
+            score.value = '';
         }
     })
     score.focus();
