@@ -91,8 +91,7 @@ function add_players() {
 function game() {
     body.innerHTML = '<h1 class="current_player">現在輪到</h1>'
                    + '<table id="table"></table>'
-                   + '<h2 class="score">請輸入分數</h2>'
-                   + '<input type="number" id="score" min=0 max=180 />'
+                   + '<input type="number" id="score" placeholder="請輸入分數" min=0 max=180 />'
                    + '<table><tr id="recovery"></tr></table>';
 
     let table = document.getElementById('table');
@@ -103,9 +102,9 @@ function game() {
         let tr = document.getElementById('tr_' + i);
         for (let j = i; j < i + 2 && j < player_amount; j++) {
             if (j === current_player) {
-                tr.innerHTML += '<td class="current_player"><h2>' + players[j].name + '<br />' + players[j].score+ '</h2></td>'
+                tr.innerHTML += '<td class="current_player">' + players[j].name + '<br />' + players[j].score+ '</td>'
             } else {
-                tr.innerHTML += '<td><h2>' + players[j].name + '<br />' + players[j].score + '</h2></td>';
+                tr.innerHTML += '<td>' + players[j].name + '<br />' + players[j].score + '</td>';
             }
         }
     }
