@@ -41,9 +41,5 @@ button {
 }
 
 button:disabled {
-    font-size: 1em;
-    border: none;
-    margin-top: 0.5em;
     background-color: #000;
-    color: #000;
 }
