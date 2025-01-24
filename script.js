@@ -116,7 +116,7 @@ function game() {
         recovery.innerHTML = '<td><button onclick="undo()">上一步(b)</button></td>';
         undo_on = true;
     } else {
-        recovery.innerHTML = '<td><button disabled></button></td>';
+        recovery.innerHTML = '<td><button disabled>上一步(b)</button></td>';
         undo_on = false;
     }
     recovery.innerHTML += '<td><button onclick="again()">從頭再來(a)</button></td>';
@@ -124,7 +124,7 @@ function game() {
         recovery.innerHTML += '<td><button onclick="redo()">下一步(n)</button></td>';
         redo_on = true;
     } else {
-        recovery.innerHTML += '<td><button disabled></button></td>';
+        recovery.innerHTML += '<td><button disabled>下一步(n)</button></td>';
         very_first = -1;
         redo_on = false;
     }
