@@ -11,12 +11,6 @@ h1 {
     text-align: center;
 }
 
-h2 {
-    font-size: 0.75em;
-    text-align: center;
-    margin: 0;
-}
-
 input {
     font-size: 1em;
     width: 8em;
@@ -36,10 +30,6 @@ td {
 
 .current_player {
     color: #0f0;
-}
-
-.score {
-    color: #f00;
 }
 
 button {
