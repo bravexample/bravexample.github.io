@@ -9,6 +9,8 @@ let log = [];
 let log_index = -1;
 let playing = 0;
 let rank = [];
+let undo_on = false;
+let redo_on = false;
 
 // the function for the first page, getting the target score and the amount of players
 function welcome() {
@@ -22,19 +24,17 @@ function welcome() {
     let amount = document.getElementById('amount');
 
     score.focus();
-    score.addEventListener('keypress', function(event) {
-        switch (event.key) {
-            case 'Enter':
-                amount.focus();
+    score.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            amount.focus();
         }
     })
 
-    amount.addEventListener('keypress', function(event) {
-        switch (event.key) {
-            case 'Enter':
-                target_score = score.value;
-                player_amount = amount.value;
-                input_player();
+    amount.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            target_score = score.value;
+            player_amount = amount.value;
+            input_player();
         }
     })
 }
@@ -47,27 +47,24 @@ function input_player() {
     }
 
     let first_input = document.getElementById('player_name_0');
-    first_input.addEventListener('keypress', function(event) {
-        switch (event.key) {
-            case 'Enter':
-                document.getElementById('player_name_1').focus();
+    first_input.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('player_name_1').focus();
         }
     })
     first_input.focus();
 
     for (let i = 1; i < player_amount - 1; i++) {
-        document.getElementById('player_name_' + i).addEventListener('keypress', function(event) {
-            switch (event.key) {
-                case 'Enter':
-                    document.getElementById('player_name_' + (i + 1)).focus();
+        document.getElementById('player_name_' + i).addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('player_name_' + (i + 1)).focus();
             }
         })
     }
 
-    document.getElementById('player_name_' + (player_amount - 1)).addEventListener('keypress', function(event) {
-        switch (event.key) {
-            case 'Enter':
-                add_players();
+    document.getElementById('player_name_' + (player_amount - 1)).addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            add_players();
         }
     })
 }
@@ -84,7 +81,17 @@ function add_players() {
 
     playing = player_amount;
 
-    game()
+    body.addEventListener('keyup', function(event) {
+        if (event.key === 'b' && undo_on) {
+            undo();
+        } else if (event.key === 'n' && redo_on) {
+            redo();
+        } else if (event.key === 'a') {
+            again();
+        }
+    })
+
+    game();
 }
 
 // the function for the game
@@ -109,8 +116,6 @@ function game() {
         }
     }
 
-    let undo_on = false;
-    let redo_on = false;
     let recovery = document.getElementById('recovery');
     if (log_index >= 0) {
         recovery.innerHTML = '<td><button onclick="undo()">上一步(b)</button></td>';
@@ -130,24 +135,10 @@ function game() {
     }
 
     let score = document.getElementById('score');
-    score.addEventListener('keypress', function(event) {
-        switch (event.key) {
-            case 'Enter':
-                logging();
-                check_score(score.value);
-                break;
-            case 'a':
-                again();
-                break;
-            case 'b':
-                if (undo_on) {
-                    undo();
-                }
-                break;
-            case 'n':
-                if (redo_on) {
-                    redo();
-                }
+    score.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            logging();
+            check_score(score.value);
         }
     })
     score.addEventListener('input', function() {
@@ -267,7 +258,7 @@ function ranking() {
 function result() {
     body.innerHTML = '<h1>遊戲結束</h1>'
                    + '<table id="table"></table>'
-                   + '<button onclick="again()">再來一次</button>';
+                   + '<button onclick="again()">再來一次(a)</button>';
 
     let table = document.getElementById('table');
 
