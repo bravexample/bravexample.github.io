@@ -109,7 +109,8 @@ function game() {
 		let tr = document.getElementById('tr_' + i);
 		for (let j = i; j < i + 2 && j < player_amount; j++) {
 			if (j === current_player) {
-				tr.innerHTML += '<td class="current_player">' + players[j].name + '<br />' + players[j].score+ '</td>'
+				tr.innerHTML += '<td class="current_player">' + players[j].name + '<br />' 
+				             + players[j].score + '</td>'
 			} else {
 				tr.innerHTML += '<td>' + players[j].name + '<br />' + players[j].score + '</td>';
 			}
