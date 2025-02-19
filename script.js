@@ -11,6 +11,7 @@ let playing = 0;
 let rank = [];
 let undo_on = false;
 let redo_on = false;
+let round = 1;
 
 // the function for the first page, getting the target score and the amount of players
 function welcome() {
@@ -96,7 +97,7 @@ function add_players() {
 
 // the function for the game
 function game() {
-	body.innerHTML = '<h1 class="current_player">現在輪到</h1>'
+	body.innerHTML = '<h1 class="current_player">第 ' + round + ' 輪，現在輪到</h1>'
 	               + '<table id="table"></table>'
 	               + '<input type="number" id="score" placeholder="請輸入分數" min=0 max=180 />'
 	               + '<table><tr id="recovery"></tr></table>';
@@ -143,7 +144,7 @@ function game() {
 		}
 	})
 	score.addEventListener('input', function() {
-		if (!(score.value > 0)) {
+		if (!(score.value >= 0)) {
 			score.value = '';
 		}
 	})
@@ -157,9 +158,12 @@ function undo() {
 	}
 
 	current_player = log[log_index].player;
-	let temp = players[current_player].score;
+	let temp_score = players[current_player].score;
 	players[current_player].score = log[log_index].score;
-	log[log_index].score = temp;
+	log[log_index].score = temp_score;
+	let temp_round = round;
+	round = log[log_index].round;
+	log[log_index].round = temp_round;
 	if (players[current_player].playing === false) {
 		players[current_player].playing = true;
 		playing++;
@@ -181,12 +185,15 @@ function redo() {
 			redo();
 		}
 	} else {
-		let temp = players[current_player].score;
+		let temp_score = players[current_player].score;
 		players[current_player].score = log[log_index].score;
-		log[log_index].score = temp;
+		log[log_index].score = temp_score;
 		if (players[current_player].score === 0 && ranking()) {
 			return;
 		}
+		let temp_round = round;
+		round = log[log_index].round;
+		log[log_index].round = temp_round;
 	}
 
 	if (log_index >= log.length - 1) {
@@ -207,34 +214,40 @@ function logging() {
 	if (very_first === -1) {
 		log.push({
 			player: current_player,
-			score: players[current_player].score
+			score: players[current_player].score,
+			round: round
 		});
 		log_index++;
 	} else {
 		log_index++;
 		log[log_index] = {
 			player: current_player,
-			score: players[current_player].score
+			score: players[current_player].score,
+			round: round
 		};
 	}
 }
 
 // check if the player is still playing
 function check_score(score) {
-	let temp = players[current_player].score - score;
+	let temp_score = players[current_player].score - score;
 
-	if (temp > 0) {
-		players[current_player].score = temp;
-	} else if (temp === 0) {
+	if (temp_score > 0) {
+		players[current_player].score = temp_score;
+	} else if (temp_score === 0) {
 		players[current_player].score = 0;
 		if (ranking()) {
 			return;
 		}
 	}
 
+	let temp_player = current_player;
 	current_player = (current_player + 1) % player_amount;
 	while (players[current_player].playing === false) {
 		current_player = (current_player + 1) % player_amount;
+	}
+	if (current_player <= temp_player) {
+		round++;
 	}
 
 	game();
@@ -283,6 +296,8 @@ function again() {
 	very_first = -1;
 	log = [];
 	log_index = -1;
+
+	round = 1;
 
 	game();
 }
