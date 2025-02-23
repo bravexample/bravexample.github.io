@@ -143,10 +143,8 @@ function game() {
 			check_score(score.value);
 		}
 	})
-	score.addEventListener('input', function() {
-		if (!(score.value >= 0)) {
-			score.value = '';
-		}
+	score.addEventListener('input', function(event) {
+		event.target.value = event.target.value.replace(/[^0-9]/g, '');
 	})
 	score.focus();
 }
